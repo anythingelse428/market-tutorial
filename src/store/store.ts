@@ -34,7 +34,8 @@ export const useProductStore = defineStore('products', {
             case 'title':
               if (value?.length) {
                 filtered = filtered.filter(el => 
-                  (el[key as TProductFilter] as string)?.toLowerCase().includes((value as string).toLowerCase()) === true)
+                  (el[key as TProductFilter] as string)?.toLowerCase()
+                  .includes((value as string).toLowerCase()) === true)
               }
               break;
             default:
