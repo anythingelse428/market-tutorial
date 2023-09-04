@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IProduct } from '../../store/interfaces';
+import { IProduct } from '../../store/types';
 import { defineProps, PropType } from 'vue'
 
 const props = defineProps({

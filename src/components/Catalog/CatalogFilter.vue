@@ -6,7 +6,7 @@
       @click="$emit('filter', { name: 'category', value: category })">
       {{ category }}
     </div>
-    <div class="catalog-filter__item" @click="$emit('filter', { name: 'category', value: '' })">
+    <div class="catalog-filter__item --category" @click="$emit('filter', { name: 'category', value: '' })">
       Все
     </div>
 
@@ -23,17 +23,25 @@ import { useProductStore } from '@/store/store';
 import router from '@/router';
 const store = useProductStore()
 const categories = store.categories
+
 const emit = defineEmits(['filter'])
+
+const initialCategory = router.currentRoute.value.query?.category as string || ''
+
 const price = router.currentRoute.value.query?.price as string
 const [initialMin, initialMax] = price?.split(',').map(el => Number(el)) || [0, 10000]
-const initialCategory = router.currentRoute.value.query?.category as string || ''
-const initialTitle = router.currentRoute.value.query?.title as string || ''
 const minPrice = ref(initialMin)
 const maxPrice = ref(initialMax)
+
+const initialTitle = router.currentRoute.value.query?.title as string || ''
 const title = ref(initialTitle)
 function emitFilter() {
-  if (Number.isInteger(minPrice.value) && Number.isInteger(maxPrice.value)) {
-    emit('filter', { name: 'price', range: { min: minPrice.value, max: maxPrice.value } })
+  if (Number.isInteger(minPrice.value)
+    && Number.isInteger(maxPrice.value)) {
+    emit('filter', {
+      name: 'price',
+      range: { min: minPrice.value, max: maxPrice.value }
+    })
   }
 }
 watch([minPrice, maxPrice], emitFilter)
