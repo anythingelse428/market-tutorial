@@ -1,26 +1,34 @@
 <template>
-  <div class="catalog-filter">
-    <input name="catalog-filter__item --search" placeholder="Найти"
+  <div class="catalog-filter d-flex justify-content-between pb-4">
+    <input class="catalog-filter__item --search" name="search" type="text" placeholder="Найти"
       @input="$emit('filter', { name: 'title', value: title })" v-model="title" />
-    <div class="catalog-filter__item --category" v-for="(category, idx) in categories" :key="idx"
-      @click="$emit('filter', { name: 'category', value: category })">
-      {{ category }}
-    </div>
-    <div class="catalog-filter__item --category" @click="$emit('filter', { name: 'category', value: '' })">
-      Все
-    </div>
 
-    по цене
+    <div class="catalog-filter__item--categories d-flex gap-2">
+      <button class="catalog-filter__item --category btn"
+              :class="currentFilterCategory != category ? 'btn-outline-secondary' : 'btn-secondary'"
+              v-for="(category, idx) in categories"
+              :key="idx"
+              @click="$emit('filter', { name: 'category', value: category })">
+        {{ category }}
+      </button>
+      <button class="catalog-filter__item --category btn"
+              :class="currentFilterCategory != '' ? 'btn-outline-secondary' : 'btn-secondary'"
+              @click="$emit('filter', { name: 'category', value: '' })">
+        Все
+      </button>
+    </div>
     <div class="catalog-filter__item --price">
-      <input v-model="minPrice" type="number" name="min" step="1" min="0">
-      <input v-model="maxPrice" type="number" name="max" step="1" min="0">
+      Цена:
+      <input v-model="minPrice" class="py-1 mx-2" type="number" name="min" step="1" min="0">
+      <input v-model="maxPrice" class="py-1" type="number" name="max" step="1" min="0">
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { defineEmits, onMounted, ref, watch } from 'vue';
-import { useProductStore } from '@/store/store';
+import { computed, ComputedRef, defineEmits, onMounted, ref, watch } from 'vue';
+import { useProductStore } from '@/store/catalogStore';
 import router from '@/router';
+
 const store = useProductStore()
 const categories = store.categories
 
@@ -35,6 +43,7 @@ const maxPrice = ref(initialMax)
 
 const initialTitle = router.currentRoute.value.query?.title as string || ''
 const title = ref(initialTitle)
+
 function emitFilter() {
   if (Number.isInteger(minPrice.value)
     && Number.isInteger(maxPrice.value)) {
@@ -56,4 +65,29 @@ onMounted(() => {
   emit('filter', { name: 'category', value: initialCategory })
   emit('filter', { name: 'title', value: initialTitle })
 })
+
+const currentFilterCategory: ComputedRef<string> = computed((): string => router.currentRoute.value.query.category as string || '')
+
 </script>
+
+<style lang="scss">
+input {
+  border-radius: 0.4rem;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding-left: 0.5rem;
+  transition: all 400ms;
+
+  &:focus {
+    outline: none;
+    border-bottom: 1px solid black;
+    background-color: #ccc;
+  }
+
+  &[type=number] {
+    &::-webkit-inner-spin-button {
+      opacity: 1;
+    }
+  }
+}
+</style>

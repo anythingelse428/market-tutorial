@@ -1,14 +1,14 @@
 <template>
   <div class="catalog-page">
     <catalog-filter @filter="(e) => filterProducts(e)" />
-    <catalog-list v-if="products" :products="products" />
+    <catalog-list v-if="products?.length" :products="products" />
   </div>
 </template>
 <script lang="ts" setup>
-import CatalogFilter from '@/components/Catalog/CatalogFilter.vue';
+import CatalogFilter from '../components/Catalog/CatalogFilter.vue';
 import CatalogList from '../components/Catalog/CatalogList.vue'
 import { Ref, ref } from 'vue';
-import { useProductStore } from '@/store/store';
+import { useProductStore } from '../store/catalogStore';
 import { IProduct } from '../store/types';
 import router from '@/router';
 import { useRouter } from 'vue-router';
@@ -19,12 +19,14 @@ const currentRoute = useRouter().currentRoute
 async function filterProducts
   (params: { name: string, value?: string, range?: { min: number, max: number } }) {
   const query = currentRoute.value.query
+
   await router.push({
     query: {
       ...query, [params.name]: params.value
         ?? params.range?.min + ',' + params.range?.max
     }
   })
+
   products.value = store.product({ ...currentRoute.value.query })
 }
 </script>

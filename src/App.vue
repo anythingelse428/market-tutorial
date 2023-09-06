@@ -1,14 +1,16 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/catalog">Catalog</router-link>
-  </nav>
-  <router-view />
+  <my-navbar></my-navbar>
+  <div class="container">
+    <router-view />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useProductStore } from './store/store';
+import { useProductStore } from './store/catalogStore';
+import MyNavbar from './components/MyNavbar.vue';
 
-const store = useProductStore()
-store.setProducts()
+const catalogStore = useProductStore()
+catalogStore.setProducts()
+
 </script>
+
