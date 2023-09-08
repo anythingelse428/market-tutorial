@@ -48,7 +48,6 @@ export const useProductStore = defineStore('products', {
   },
   actions: {
     async setProducts() {
-
      const response = await axios.get<{ products: IProduct[] }>('http://localhost:8080/db.json')
      try {
       this.products = response.data.products
